@@ -1,6 +1,6 @@
 import React from 'react'
-import { ListItem, TextInput, Flex, Spacer, Avatar } from "@react-native-material/core";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { ListItem, Flex, Spacer, Avatar } from "@react-native-material/core";
+import TalkToText from './TalkToText';
 
 export default function Message() {
     return (
@@ -15,12 +15,7 @@ export default function Message() {
             title="Sarah"
             secondaryText="I need help, can you help me?"
           />
-          <TextInput
-            leadingMode="icon"
-            leading={props => <Icon name="microphone" {...props} />}
-            label="Enter Text"
-            trailing={props => <Icon name="send" {...props} />}
-          />
+          <TalkToText />
         </Flex>
       </Flex>
     );

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AsyncStorage from '@react-native-community/async-storage'
 //import screens
 import HomeScreen from "./src/pages/HomeScreen"
 import EarningsScreen from "./src/pages/EarningsScreen"

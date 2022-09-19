@@ -6,6 +6,7 @@ import { logout } from '../redux/auth/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { update } from '../redux/auth/authSlice';
 import UploadImage from '../components/UploadImage';
+import { patchDataAPI } from '../utils/apiCalls';
 
 export default function MyAccountScreen() {
   const auth = useSelector((state) => state.auth)
@@ -15,11 +16,13 @@ export default function MyAccountScreen() {
   const [edit, setEdit] = useState(false)
   const [name, setName] = useState(auth.data.name)
 
-  const handleEdit = () => {
+  const handleSave = () => {
     dispatch(update({name}))
+    const local = patchDataAPI({url:"worker/user/update_user", values:auth.data})
+    console.log(local)
     setEdit(false)
   }
-
+  
   const styles = StyleSheet.create({
     marginTop:{
       marginTop:10
@@ -37,7 +40,7 @@ export default function MyAccountScreen() {
       <Flex fill >
         <View style={{margin:20, marginBottom:0}}>
           <View style={{alignItems:'flex-start'}}>
-            <Button title="Save" color='orange' onPress={handleEdit} />
+            <Button title="Save" color='orange' onPress={handleSave} />
           </View>
           <View style={{alignItems:'flex-end', top:-35}}>
             <Button title="Log out" color='#e2202c' onPress={() => dispatch(logout())} />
@@ -45,8 +48,10 @@ export default function MyAccountScreen() {
         </View>
         <Flex fill style={{alignItems:'center'}}>
           <HStack>
-            <UploadImage dispatchCall={update} field='avatar' />
             <Avatar size={130} image={{ uri: auth.data.avatar }} />
+          </HStack>
+          <HStack>
+            <UploadImage dispatchCall={update} field='avatar' button_title="Change profile image" />
           </HStack>
           <HStack style={styles.marginTop}>
             <Button title='Certified' color="black" />
@@ -56,9 +61,11 @@ export default function MyAccountScreen() {
           </VStack>
           <HStack style={styles.marginTop}>
             <ScrollView horizontal={true}>
-              <UploadImage dispatchCall={update} field='example_images' />
-              {auth.data.example_images && auth.data.example_images.map((item, index) => <Image key={index} style={styles.image} source={{uri:item}} />)}
+              {auth.data.example_of_work_images && auth.data.example_of_work_images.map((item, index) => <Image key={index} style={styles.image} source={{uri:item}} />)}
             </ScrollView>
+          </HStack>
+          <HStack>
+            <UploadImage dispatchCall={update} field='example_of_work_images' button_title="Upload job photos" />
           </HStack>
           <HStack style={styles.marginTop}>
             <Icon color={'black'} size={30} name="star" />
@@ -115,7 +122,7 @@ export default function MyAccountScreen() {
           </HStack>
           <HStack style={styles.marginTop}>
             <ScrollView horizontal={true}>
-              {auth.data.example_images && auth.data.example_images.map((item, index) => <Image key={index} style={styles.image} source={{uri:item}} />)}
+              {auth.data.example_of_work_images && auth.data.example_of_work_images.map((item, index) => <Image key={index} style={styles.image} source={{uri:item}} />)}
             </ScrollView>
           </HStack>
           <HStack style={styles.marginTop}>

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { ScrollView, View, StyleSheet, Image, Dimensions } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage'
 import { Button, VStack, HStack, TextInput, Switch, ListItem, Text } from "@react-native-material/core";
 import {Picker} from '@react-native-picker/picker';
 import { useDispatch } from 'react-redux'
 import { login } from '../redux/auth/authSlice';
+import { getMyStringValue, setStringValue } from '../utils/deviceStorage';
+import { postDataAPI } from '../utils/apiCalls'
 
 export default function LoginScreen({navigation}) {
     const dispatch = useDispatch()
@@ -16,11 +17,13 @@ export default function LoginScreen({navigation}) {
     const [pageThree, setPageThree] = useState(false)
     const windowWidth = Dimensions.get('window').width;
 
-    const [username, setUsername] = useState('Email or Phone number')
-    const [password, setPassword] = useState('Password')
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
   
     const handleSignIn = async () => {
-      dispatch(login({username}))
+      const data = await postDataAPI("worker/user/login", { email:username, password })
+      const user = Object.values(data)[0].user
+      dispatch(login({_id: user._id, name:user.name, username: user.name, token:user.token}))
     }
     
     const styles = StyleSheet.create({
@@ -111,7 +114,7 @@ export default function LoginScreen({navigation}) {
             <Text style={{fontSize:20, textAlign:'center', marginTop:30}}>LOGIN OR SIGNUP</Text>
             <View style={{ margin: 16, marginRight:50, marginLeft:50 }}>
               <TextInput variant="outlined" label="Email or Phone number" onChangeText={(value) => setUsername(value)} value={username} />
-              <TextInput variant="outlined" label="Password" style={{ marginTop:10 }} onChangeText={(value) => setPassword(value)} value={password} />
+              <TextInput variant="outlined" secureTextEntry={true} label="Password" style={{ marginTop:10 }} onChangeText={(value) => setPassword(value)} value={password} />
             </View>
             <View style={{margin:50, marginBottom:0, marginTop:0}}>
               <View style={{flexDirection:'row'}}>

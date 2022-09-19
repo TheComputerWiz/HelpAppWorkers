@@ -5,18 +5,16 @@ export const messageSlice = createSlice({
     initialState:{
         loading:true,
         data:[{
-            message:[]
+            messageInput:["Message"],
         }],
         error:'',
     },
     reducers:{
         create: (state, action) => {
-            if (action.payload.message) {
-                if ( state.data.message ) {
-                    state.data.message.push(action.payload.message)
-                } else {
-                    state.data.message = [action.payload]
-                }
+            if(state.data.messageInput){
+                state.data.messageInput.push(action.payload.messageInput)
+            } else {
+                state.data = action.payload
             }
         },
     },

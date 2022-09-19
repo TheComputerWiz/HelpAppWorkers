@@ -9,17 +9,15 @@ export const authSlice = createSlice({
             name:'',
             password:'',
             avatar:'',
-            example_images:[],
+            example_of_work_images:[],
         }],
         error:'',
 
     },
     reducers:{
         login: (state, action) => {
-            state.data.username === action.payload.username ? 
-                state.data.loading=false
-                :
-                state.data.loading=true
+            state.loading=false,
+            state.data=action.payload
         },
         register: (state, action) => {
             state.loading=false,
@@ -28,11 +26,11 @@ export const authSlice = createSlice({
         update: (state, action) => {
             if (action.payload.name) state.data.name = action.payload.name
             if (action.payload.avatar) state.data.avatar = action.payload.avatar
-            if (action.payload.example_images) {
-                if ( state.data.example_images ) {
-                    state.data.example_images.push(action.payload.example_images)
+            if (action.payload.example_of_work_images) {
+                if ( state.data.example_of_work_images ) {
+                    state.data.example_of_work_images.push(action.payload.example_of_work_images)
                 } else {
-                    state.data.example_images = [action.payload.example_images]
+                    state.data.example_of_work_images = [action.payload.example_of_work_images]
                 }
             }
         },
