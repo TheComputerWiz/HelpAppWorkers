@@ -29,9 +29,10 @@ export const postDataAPI = async (url, params, headers) => {
     }
 }
 
-export const patchDataAPI = async (url, params) => {
+export const patchDataAPI = async (url, params, headers) => {
     try {
         const results = await axios.patch(`${baseUrl}/api/${url}`, params, {headers}).then((response) => {
+            console.log(response)
         });
 
         return results

@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { login } from '../redux/auth/authSlice';
 import { getMyStringValue, setStringValue } from '../utils/deviceStorage';
 import { postDataAPI } from '../utils/apiCalls'
+import StringsOfLanguages from '../utils/localizations';
 
 export default function LoginScreen({navigation}) {
     const dispatch = useDispatch()
@@ -21,9 +22,9 @@ export default function LoginScreen({navigation}) {
     const [password, setPassword] = useState('')
   
     const handleSignIn = async () => {
-      const data = await postDataAPI("worker/user/login", { email:username, password })
+      const data = await postDataAPI("worker/user/login", { email:username.toLowerCase(), password })
       const user = Object.values(data)[0].user
-      dispatch(login({_id: user._id, name:user.name, username: user.name, token:user.token}))
+      dispatch(login({_id: user._id, name:user.name, username: user.name, token:user.token, avatar:user.avatar, example_of_work_images: user.example_of_work_images }))
     }
     
     const styles = StyleSheet.create({
@@ -96,14 +97,16 @@ export default function LoginScreen({navigation}) {
                   setSelectedLanguage(itemValue)
                   setPageTwo(false)
                   setPageThree(true)
+                  console.log(itemValue)
+                  StringsOfLanguages.setLanguage(itemValue)
                 }}
                 style={{color:'black', backgroundColor:"white"}}
                 dropdownIconColor="black"
               >
                 <Picker.Item label="Choose one..." value="none" />
-                <Picker.Item label="English" value="english" />
-                <Picker.Item label="French" value="french" />
-                <Picker.Item label="Arabic" value="arabic" />
+                <Picker.Item label="English" value="en" />
+                <Picker.Item label="French" value="fr" />
+                <Picker.Item label="Arabic" value="ar" />
               </Picker>
             </View>
           </>
@@ -111,7 +114,7 @@ export default function LoginScreen({navigation}) {
           
           {pageThree &&
           <>
-            <Text style={{fontSize:20, textAlign:'center', marginTop:30}}>LOGIN OR SIGNUP</Text>
+            <Text style={{fontSize:20, textAlign:'center', marginTop:30}}>{StringsOfLanguages.login_signup}</Text>
             <View style={{ margin: 16, marginRight:50, marginLeft:50 }}>
               <TextInput variant="outlined" label="Email or Phone number" onChangeText={(value) => setUsername(value)} value={username} />
               <TextInput variant="outlined" secureTextEntry={true} label="Password" style={{ marginTop:10 }} onChangeText={(value) => setPassword(value)} value={password} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Flex } from "@react-native-material/core";
+import { ActivityIndicator, Button, Flex } from "@react-native-material/core";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux'
@@ -8,6 +8,7 @@ export default function UploadImage({dispatchCall, field, button_title}) {
     const [response, setResponse] = useState(null);
     const dispatch = useDispatch()
     const [showButtons, setShowButtons] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const uploadImg = ( image ) => {
         const data = new FormData()
@@ -21,6 +22,7 @@ export default function UploadImage({dispatchCall, field, button_title}) {
         }).then(res => res.json())
         .then(data => {
             dispatch(dispatchCall({[field]:data.secure_url}))
+            setLoading(false)
         })
     }
 
@@ -28,6 +30,7 @@ export default function UploadImage({dispatchCall, field, button_title}) {
         response?.assets.map(({ uri, type, fileName }) => {
             let newfile = {uri, type, name:fileName}
             uploadImg(newfile)
+            setLoading(true)
         })
         setShowButtons(false)
     }, [response])
@@ -35,7 +38,8 @@ export default function UploadImage({dispatchCall, field, button_title}) {
 
     return(
         <Flex style={{justifyContent:'center'}}>
-            {!showButtons &&
+            {loading && <Button title={<ActivityIndicator color="black" />} color="white" />}
+            {!showButtons && !loading &&
                 <Button 
                     title={button_title} 
                     onPress={() => {

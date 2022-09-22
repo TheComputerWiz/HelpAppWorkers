@@ -16,10 +16,9 @@ export default function MyAccountScreen() {
   const [edit, setEdit] = useState(false)
   const [name, setName] = useState(auth.data.name)
 
-  const handleSave = () => {
-    dispatch(update({name}))
-    const local = patchDataAPI({url:"worker/user/update_user", values:auth.data})
-    console.log(local)
+  const handleSave = async() => {
+    //dispatch(update({name}))
+    const local = await patchDataAPI("worker/user/update_user", {_id:auth.data._id, avatar:auth.data.avatar, example_of_work_images:auth.data.example_of_work_images}, {"x-access-token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjMyYTFhM2Q4MTBkN2Y2YjllZmY5YTYxIiwiZW1haWwiOiJFbWFpbCAiLCJpYXQiOjE2NjM3MDM2MTMsImV4cCI6MTY2MzcxMDgxM30.36vCCJgJv3hFOHp6F1oYi51loXb_4B4hNLn9CaLN4UY"})
     setEdit(false)
   }
   
