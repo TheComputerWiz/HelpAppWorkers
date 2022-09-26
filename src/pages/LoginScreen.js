@@ -116,27 +116,27 @@ export default function LoginScreen({navigation}) {
           <>
             <Text style={{fontSize:20, textAlign:'center', marginTop:30}}>{StringsOfLanguages.login_signup}</Text>
             <View style={{ margin: 16, marginRight:50, marginLeft:50 }}>
-              <TextInput variant="outlined" label="Email or Phone number" onChangeText={(value) => setUsername(value)} value={username} />
-              <TextInput variant="outlined" secureTextEntry={true} label="Password" style={{ marginTop:10 }} onChangeText={(value) => setPassword(value)} value={password} />
+              <TextInput variant="outlined" label={StringsOfLanguages.email_phone} onChangeText={(value) => setUsername(value)} value={username} />
+              <TextInput variant="outlined" secureTextEntry={true} label={StringsOfLanguages.password} style={{ marginTop:10 }} onChangeText={(value) => setPassword(value)} value={password} />
             </View>
             <View style={{margin:50, marginBottom:0, marginTop:0}}>
               <View style={{flexDirection:'row'}}>
                 <Switch value={checked} onValueChange={() => setChecked(!checked)} />
-                <Text>Remember me</Text>
+                <Text>{StringsOfLanguages.remember_me}</Text>
               </View>
               
               <Button 
                 style={{marginTop:30}} 
                 color="black" 
-                title="SIGN ME IN" 
+                title={StringsOfLanguages.sign_in} 
                 onPress={handleSignIn}
               />
             </View>
-            <Text style={[styles.text, {color:'black', textAlign:'center', marginTop:20}]}>Forgot your password? Tap to get it!</Text>
+            <Text style={[styles.text, {color:'black', textAlign:'center', marginTop:20}]}>{StringsOfLanguages.forgot_password}</Text>
             <View style={{backgroundColor:'black', padding:50, marginTop:30, paddingBottom:70}}>
               <View>
                 <Text style={{textAlign:'center', color:'white', fontSize:20}}>
-                  Don't have an account?
+                  {StringsOfLanguages.no_account}
                 </Text>
                 <Button 
                   style={{marginTop:30}} 

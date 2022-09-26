@@ -21,6 +21,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MoreTime from './src/components/MoreTime';
 //add redux
 import { useSelector, useDispatch } from 'react-redux'
+import Slot from './src/components/Slot';
 
 const Tab = createBottomTabNavigator();
 
@@ -32,6 +33,7 @@ function HomeStack() {
     <Stack.Navigator>
       <Stack.Screen name="Welcome" component={HomeScreen} options={{ title: 'Welcome, '+auth.data.name }} />
       <Stack.Screen name="Schedule" component={Schedule} />
+      <Stack.Screen name="Slot" component={Slot} />
       <Stack.Screen name="Timer" component={Timer} />
       <Stack.Screen name="Extend Time" component={MoreTime} />
       <Stack.Screen name="Message" component={Message} />

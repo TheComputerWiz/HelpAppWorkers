@@ -1,67 +1,44 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Flex, Text } from "@react-native-material/core";
 import { StyleSheet } from 'react-native';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import StringsOfLanguages from '../utils/localizations';
 
-export default function Schedule() {
-  const styles = StyleSheet.create({
-    button:{
-      marginRight:50,
-      marginLeft:50,
-      margin:10,
-      padding:10,
-    }
-  })
+export default function Schedule({navigation}) {
+  const [selected, setSeletected ] = useState({})
+
+  const onDayPress = (day) => {
+    setSeletected({"selected":day.dateString})
+    navigation.navigate('Slot', { bookingDate : day })
+  }
 
     return (
-      <Flex fill>
-        <Flex fill>
-        <CalendarList
-          current={'2021-19-07'}
-          // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-          minDate={'2021-09-07'}
-          // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-          maxDate={'2021-29-07'}
-          // Handler which gets executed on day press. Default = undefined
-          onDayPress={day => {
-            console.log('selected day', day);
-          }}
-          // Handler which gets executed on day long press. Default = undefined
-          onDayLongPress={day => {
-            console.log('selected day', day);
-          }}
-          firstDay={1}
-          enableSwipeMonths={true}
+      <>
+        <Calendar
+          onDayPress={onDayPress}
+          style={styles.calendar}
+          hideExtraDays
+          markedDates={{selected : true}}
           theme={{
-            textSectionTitleColor: "black",
-            textSectionTitleDisabledColor: "black",
-            selectedDayBackgroundColor: "black",
-            selectedDayTextColor: "black",
-            todayTextColor: "black",
-            dayTextColor: "black",
-            textDisabledColor: "black",
-            dotColor: "black",
-            selectedDotColor: "black",
-            arrowColor: "rgb(101,180,84)",
-            disabledArrowColor: 'red',
-            monthTextColor: "black",
-            indicatorColor: "blue",
-            textDayFontFamily: "ProximaNova-Regular",
-            textMonthFontFamily: "ProximaNova-Regular",
-            textDayHeaderFontFamily: "ProximaNova-Regular",
-            textDayFontWeight: "400",
-            textMonthFontWeight: "bold",
-            textDayHeaderFontWeight: "200",
-            textDayFontSize: 15,
-            textDayHeaderFontSize: 11,
+            selectedDayBackgroundColor: 'green',
+            todayTextColor: 'green',
+            arrowColor: 'green',
           }}
-              />
-        </Flex>
-        <Flex fill style={{backgroundColor:'black', paddingTop:30}}>
-          <Button style={styles.button} title="Add same day availability" color="#1eaaf1" />
-          <Button style={styles.button} title="Add unavailability" color="#e2202c" />
-          <Button style={styles.button} title="Add availability" color="#35b736" />
-        </Flex>
-      </Flex>
+        />
+        <Text style={{textAlign:'center', marginTop:20, fontSize:20}}>{StringsOfLanguages.current_appointments}</Text>
+      </>
     );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  calendar: {
+    borderTopWidth: 1,
+    paddingTop: 5,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+    height: 350
+  }
+});
