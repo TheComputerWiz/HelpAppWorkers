@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux'
 import CheckBox from '@react-native-community/checkbox';
 import DocumentPicker from 'react-native-document-picker';
 import { postDataAPI } from '../utils/apiCalls';
+import StringsOfLanguages from '../utils/localizations';
+import {Picker} from '@react-native-picker/picker';
 
 export default function RegisterScreen(){
   
@@ -19,15 +21,18 @@ export default function RegisterScreen(){
   const [password, setPassword] = useState('')
   const [address, setAddress] = useState('')
   const [user, setUser] = useState('')
+  const [pageOne, setPageOne] =useState(true)
+  const [pageTwo, setPageTwo] =useState(false)
+  const [selectedLanguage, setSelectedLanguage] =useState('')
 
   const getUsers = async () => {
-    const results = await postDataAPI("worker/user/add_user", {name, phone_number:Number(phoneNumber), email, username:email, password, address})
+    const results = await postDataAPI("worker/user/add_user", {name, phone_number:Number(phoneNumber), email, username:email, password, address, language:selectedLanguage})
     setUser(results)
   }
 
   const handleRegsiter = () => {
     if(!toggleCheckBox){
-      Alert.alert('You must agree to terms and conditions')
+      Alert.alert(StringsOfLanguages.agree_to_terms_alert)
       return
     }
     getUsers()
@@ -62,11 +67,11 @@ export default function RegisterScreen(){
       );
       let responseJson = await res.json();
       if (responseJson.status == 1) {
-        alert('Upload Successful');
+        alert(StringsOfLanguages.upload_success);
       }
     } else {
       // If no file selected the show alert
-      alert('Please Select File first');
+      alert(StringsOfLanguages.select_file_first);
     }
   };
  
@@ -129,97 +134,124 @@ export default function RegisterScreen(){
 
     return (
         <ScrollView>
-          
-          <HStack>
-            <View style={styles.box}></View>
-            <View style={styles.box}>
-              <Image style={styles.logo} source={require('../../assets/images/logo.png')} />
+          {pageOne &&
+          <>
+           <Text style={{fontSize:20, textAlign:'center', marginTop:30}}>CHOOSE A LANGUAGE</Text>
+            <View style={{borderColor:'black', borderWidth:1, marginTop:20, margin:30}}>
+              <Picker
+                selectedValue={selectedLanguage}
+                onValueChange={(itemValue, itemIndex) => {
+                  setSelectedLanguage(itemValue)
+                  setPageOne(false)
+                  setPageTwo(true)
+                  console.log(itemValue)
+                  StringsOfLanguages.setLanguage(itemValue)
+                }}
+                style={{color:'black', backgroundColor:"white"}}
+                dropdownIconColor="black"
+              >
+                <Picker.Item label="Choose one..." value="none" />
+                <Picker.Item label="English" value="en" />
+                <Picker.Item label="French" value="fr" />
+                <Picker.Item label="Arabic" value="ar" />
+              </Picker>
             </View>
-            <View style={styles.box}></View>
-          </HStack>
-          <Text style={{textAlign:'center', fontSize:60}}>HELP</Text>
-          <Text style={{textAlign:'center', fontSize:20}}>REGISTER HERE</Text>
-          <VStack>
-            <View style={{margin:50, marginBottom:50, marginTop:10}}>
-              <TextInput color='black' variant="outlined" label="Full Name" onChangeText={(value) => setName(value)} style={{ margin: 6 }} value={name} />
-              <TextInput color='black' variant="outlined" label="Phone Number" onChangeText={(value) => setPhoneNumber(value)} style={{ margin: 6 }} value={phoneNumber} />
-              <TextInput color='black' variant="outlined" label="Email" onChangeText={(value) => setEmail(value)} style={{ margin: 6 }} value={email} />
-              <TextInput color='black' variant="outlined" label="Password" onChangeText={(value) => setPassword(value)} style={{ margin: 6 }} value={password} />
-              <TextInput color='black' variant="outlined" label="Address" onChangeText={(value) => setAddress(value)} style={{ margin: 6 }} value={address} />
-              {DOBFile != null ? (
-                <Text>
-                  File Name: {DOBFile[0].name ? DOBFile[0].name : ''}
-                  {'\n'}
-                  Type: {DOBFile[0].type ? DOBFile[0].type : ''}
-                  {'\n'}
-                  File Size: {DOBFile[0].size ? DOBFile[0].size : ''}
-                  {'\n'}
-                  URI: {DOBFile[0].uri ? DOBFile[0].uri : ''}
-                  {'\n'}
-                </Text>
-              ) : null}
-              {!DOBFile ?
-              <>
-              <Text style={{textAlign:'center'}}>D.O.B</Text>
-              <Button 
-                title="Select DOB file" 
-                onPress={() => selectFile('DOBFile')} 
-                color='black'
-              />
-              </>
-              :
-              DOBFile.length > 1 ?
-              <Button 
-                title="Upload DOB" 
-                onPress={() => uploadImage('DOBFile')} 
-              />
-              :
-              <Text>DOB Uploaded</Text>
-              }
-              {<Text></Text>}
-              {certFile != null ? (
-                <Text>
-                  File Name: {certFile[0].name ? certFile[0].name : ''}
-                  {'\n'}
-                  Type: {certFile[0].type ? certFile[0].type : ''}
-                  {'\n'}
-                  File Size: {certFile[0].size ? certFile[0].size : ''}
-                  {'\n'}
-                  URI: {certFile[0].uri ? certFile[0].uri : ''}
-                  {'\n'}
-                </Text>
-              ) : null}
-              {!certFile ?
-              <>
-              <Text style={{textAlign:'center'}}>I.D. / Police Report / Certification</Text>
-              <Button 
-                title="Select Files" 
-                onPress={() => selectFile('certFile')} 
-                color='black'
-              />
-              </>
-              :
-              certFile.length > 1 ?
-              <Button 
-                title="Upload Files" 
-                onPress={() => uploadImage('certFile')} 
-              />
-              :
-              <Text>I.D. / Police Report / Certification Uploaded</Text>
-              }
-              <CheckBox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={(newValue) => setToggleCheckBox(newValue)}
-                style={styles.checkbox}
-                lineWidth={2}
-                hideBox={false}
-                tintColors={'#9E663C'}
-              />
-              <Text style={{textAlign:'center', color:'black', fontSize:15, marginBottom:20}}>I agree to terms and conditions</Text>
-              <Button color="black" title="CREATE AN ACCOUNT" style={{padding:10, marginTop:20}} onPress={handleRegsiter} />
-            </View>
-          </VStack>
+          </>
+          }
+          {pageTwo &&
+          <>
+            <HStack>
+              <View style={styles.box}></View>
+              <View style={styles.box}>
+                <Image style={styles.logo} source={require('../../assets/images/logo.png')} />
+              </View>
+              <View style={styles.box}></View>
+            </HStack>
+            <Text style={{textAlign:'center', fontSize:60}}>{StringsOfLanguages.HELP}</Text>
+            <Text style={{textAlign:'center', fontSize:20}}>{StringsOfLanguages.register}</Text>
+            <VStack>
+              <View style={{margin:50, marginBottom:50, marginTop:10}}>
+                <TextInput color='black' variant="outlined" label={StringsOfLanguages.full_name} onChangeText={(value) => setName(value)} style={{ margin: 6 }} value={name} />
+                <TextInput color='black' variant="outlined" label={StringsOfLanguages.phone_number} onChangeText={(value) => setPhoneNumber(value)} style={{ margin: 6 }} value={phoneNumber} />
+                <TextInput color='black' variant="outlined" label={StringsOfLanguages.email} onChangeText={(value) => setEmail(value)} style={{ margin: 6 }} value={email} />
+                <TextInput color='black' variant="outlined" label={StringsOfLanguages.password} onChangeText={(value) => setPassword(value)} style={{ margin: 6 }} value={password} />
+                <TextInput color='black' variant="outlined" label={StringsOfLanguages.address} onChangeText={(value) => setAddress(value)} style={{ margin: 6 }} value={address} />
+                {DOBFile != null ? (
+                  <Text>
+                    {StringsOfLanguages.file_name}: {DOBFile[0].name ? DOBFile[0].name : ''}
+                    {'\n'}
+                    {StringsOfLanguages.type}: {DOBFile[0].type ? DOBFile[0].type : ''}
+                    {'\n'}
+                    {StringsOfLanguages.file_size}: {DOBFile[0].size ? DOBFile[0].size : ''}
+                    {'\n'}
+                    {StringsOfLanguages.uri}: {DOBFile[0].uri ? DOBFile[0].uri : ''}
+                    {'\n'}
+                  </Text>
+                ) : null}
+                {!DOBFile ?
+                <>
+                <Text style={{textAlign:'center'}}>D.O.B</Text>
+                <Button 
+                  title={StringsOfLanguages.select_dob}
+                  onPress={() => selectFile('DOBFile')} 
+                  color='black'
+                />
+                </>
+                :
+                DOBFile.length > 1 ?
+                <Button 
+                  title={StringsOfLanguages.upload} 
+                  onPress={() => uploadImage('DOBFile')} 
+                />
+                :
+                <Text>DOB {StringsOfLanguages.upload}</Text>
+                }
+                {<Text></Text>}
+                {certFile != null ? (
+                  <Text>
+                    {StringsOfLanguages.file_name}: {certFile[0].name ? certFile[0].name : ''}
+                    {'\n'}
+                    {StringsOfLanguages.type}: {certFile[0].type ? certFile[0].type : ''}
+                    {'\n'}
+                    {StringsOfLanguages.file_size}: {certFile[0].size ? certFile[0].size : ''}
+                    {'\n'}
+                    {StringsOfLanguages.uri}: {certFile[0].uri ? certFile[0].uri : ''}
+                    {'\n'}
+                  </Text>
+                ) : null}
+                {!certFile ?
+                <>
+                <Text style={{textAlign:'center'}}>{StringsOfLanguages.ID_police_cert}</Text>
+                <Button 
+                  title={StringsOfLanguages.select_files} 
+                  onPress={() => selectFile('certFile')} 
+                  color='black'
+                />
+                </>
+                :
+                certFile.length > 1 ?
+                <Button 
+                  title={StringsOfLanguages.upload_files}  
+                  onPress={() => uploadImage('certFile')} 
+                />
+                :
+                <Text>{StringsOfLanguages.ID_police_cert_uploaded}</Text>
+                }
+                <CheckBox
+                  disabled={false}
+                  value={toggleCheckBox}
+                  onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                  style={styles.checkbox}
+                  lineWidth={2}
+                  hideBox={false}
+                  tintColors={'#9E663C'}
+                />
+                <Text style={{textAlign:'center', color:'black', fontSize:15, marginBottom:20}}>{StringsOfLanguages.agree_to_terms}</Text>
+                <Button color="black" title={StringsOfLanguages.create_account} style={{padding:10, marginTop:20}} onPress={handleRegsiter} />
+              </View>
+            </VStack>
+          </>
+          }
         </ScrollView>
     )
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Flex, Text, ListItem, Avatar } from "@react-native-material/core";
 import { ScrollView, StyleSheet } from 'react-native';
+import StringsOfLanguages from '../utils/localizations';
 
 export default function EarningsScreen({navigation}) {
   const styles = StyleSheet.create({
@@ -13,7 +14,7 @@ export default function EarningsScreen({navigation}) {
     return (
       <Flex fill>
       <Flex fill>
-        <Text style={styles.text_center}>Commissions Owed</Text>
+        <Text style={styles.text_center}>{StringsOfLanguages.commissions_owed}</Text>
         <ScrollView>
         <ListItem
           title="Job Title, Date, Customer Name"
@@ -46,7 +47,7 @@ export default function EarningsScreen({navigation}) {
         </ScrollView>
       </Flex>
       <Flex fill>
-        <Text style={styles.text_center}>Customers</Text>
+        <Text style={styles.text_center}>{StringsOfLanguages.customers}</Text>
         <ScrollView>
           <ListItem
             leadingMode="avatar"

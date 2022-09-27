@@ -1,7 +1,10 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Button, VStack, HStack, ListItem, Avatar, Divider } from "@react-native-material/core";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { getMyObject } from '../utils/deviceStorage';
+import { useSelector } from 'react-redux'
+import StringsOfLanguages from '../utils/localizations';
 
 export default function HomeScreen({navigation}) {
   const styles = StyleSheet.create({
@@ -18,10 +21,12 @@ export default function HomeScreen({navigation}) {
     }
   })
 
+  const auth = useSelector((state) => state.auth)
+
     return (
       <ScrollView>
         <View>
-          <Text style={[styles.text, {textAlign:'center', padding:10}]}>Today's Jobs</Text>
+          <Text style={[styles.text, {textAlign:'center', padding:10}]}>{StringsOfLanguages.todays_jobs}</Text>
           <Divider style={{ marginBottom: 5, marginTop:-5 }} leadingInset={16} />
         </View>
         <ScrollView horizontal={true}>
@@ -53,7 +58,7 @@ export default function HomeScreen({navigation}) {
         </View>
 
         <View style={{marginTop:10}}>
-          <Text style={[styles.text, {textAlign:'center', padding:10}]}>Sameday Jobs</Text>
+          <Text style={[styles.text, {textAlign:'center', padding:10}]}>{StringsOfLanguages.sameday_jobs}</Text>
           <Divider style={{ marginBottom: 5, marginTop:-5 }} leadingInset={16} />
         </View>
         <ScrollView horizontal={true} indicatorStyle={{backgroundColor:'black'}}>
@@ -91,11 +96,11 @@ export default function HomeScreen({navigation}) {
             </View>
             <TouchableOpacity style={[styles.grid, {backgroundColor:'white'}]} onPress={() => navigation.navigate('My Jobs')}>
               <Icon name="newspaper-o" size={40} color="black" />
-              <Text style={styles.text}>Jobs</Text>
+              <Text style={styles.text}>{StringsOfLanguages.jobs}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.grid, {backgroundColor:'white'}]} onPress={() => navigation.navigate('Schedule')}>
               <Icon name="calendar" size={40} color="black" />
-              <Text style={styles.text}>Schedule</Text>
+              <Text style={styles.text}>{StringsOfLanguages.schedule}</Text>
             </TouchableOpacity>
             <View style={styles.grid}>
 
@@ -106,11 +111,11 @@ export default function HomeScreen({navigation}) {
             </View>
             <TouchableOpacity style={[styles.grid, {backgroundColor:'white'}]} onPress={() => navigation.navigate('Earnings')}>
               <Icon name="line-chart" size={40} color="black" />
-              <Text style={styles.text}>Earnings</Text>
+              <Text style={styles.text}>{StringsOfLanguages.earnings}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.grid, {backgroundColor:'white'}]} onPress={() => navigation.navigate('Timer')}>
               <Icon name="clock-o" size={40} color="black" />
-              <Text style={styles.text}>Timer</Text>
+              <Text style={styles.text}>{StringsOfLanguages.timer}</Text>
             </TouchableOpacity>
             <View style={styles.grid}>
 

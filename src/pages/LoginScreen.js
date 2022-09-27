@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, View, StyleSheet, Image, Dimensions } from 'react-native';
 import { Button, VStack, HStack, TextInput, Switch, ListItem, Text } from "@react-native-material/core";
 import {Picker} from '@react-native-picker/picker';
 import { useDispatch } from 'react-redux'
 import { login } from '../redux/auth/authSlice';
-import { getMyStringValue, setStringValue } from '../utils/deviceStorage';
+import { getAllKeys, getMyObject, removeValue, setObjectValue } from '../utils/deviceStorage';
 import { postDataAPI } from '../utils/apiCalls'
 import StringsOfLanguages from '../utils/localizations';
 
@@ -17,14 +17,41 @@ export default function LoginScreen({navigation}) {
     const [pageTwo, setPageTwo] = useState(false)
     const [pageThree, setPageThree] = useState(false)
     const windowWidth = Dimensions.get('window').width;
+    const [tryLoggingIn, setTryLoggingIn] = useState(false)
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+
+    const getValue = async () => {
+      const res = await getMyObject('authLogin')
+      const {email, password} = res
+      setUsername(email)
+      setPassword(password)
+      handleSignIn()
+    }
+
+    const getAllLocalKeys = async() => {
+      const allKeys = await getAllKeys()
+      allKeys.filter((item) => {
+        if(item === 'authLogin'){
+          setTryLoggingIn(true)
+        }
+      })
+    }
+
+    useEffect(() => {
+      getAllLocalKeys()
+      if(tryLoggingIn){
+        getValue()
+      }
+    }, [tryLoggingIn, password])
+    
   
     const handleSignIn = async () => {
       const data = await postDataAPI("worker/user/login", { email:username.toLowerCase(), password })
       const user = Object.values(data)[0].user
-      dispatch(login({_id: user._id, name:user.name, username: user.name, token:user.token, avatar:user.avatar, example_of_work_images: user.example_of_work_images }))
+      dispatch(login({_id: user._id, name:user.name, username: user.name, token:user.token, avatar:user.avatar, example_of_work_images: user.example_of_work_images, language:user.language }))
+      setObjectValue('authLogin', { email:username.toLowerCase(), password })
     }
     
     const styles = StyleSheet.create({
@@ -63,19 +90,19 @@ export default function LoginScreen({navigation}) {
             </HStack>
           </VStack>
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{fontSize:50, fontFamily:'sans-serif'}}>HELP</Text>
+            <Text style={{fontSize:50, fontFamily:'sans-serif'}}>{StringsOfLanguages.HELP}</Text>
           </View>
           {pageOne &&
           <>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop:50 }}>
-              <Text style={{fontSize:18, fontWeight:'bold'}}>Looking for a professional handyman?</Text>
-              <Text style={{fontSize:13}}>Quality handyman service you can trust.</Text>
-              <Text style={{fontSize:13}}>Moving, cleaning, mounting, gardening and more</Text>
+              <Text style={{fontSize:18, fontWeight:'bold'}}>{StringsOfLanguages.homepage_title}</Text>
+              <Text style={{fontSize:13}}>{StringsOfLanguages.homepage_sentence_one}</Text>
+              <Text style={{fontSize:13}}>{StringsOfLanguages.homepage_sentence_two}</Text>
               
             </View>
 
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop:25, marginBottom:25 }}>
-              <Button color="white" title="Get Started" onPress={() => {
+              <Button color="white" title={StringsOfLanguages.get_started} onPress={() => {
                 setPageOne(false)
                 setPageTwo(true)
               }} />
@@ -142,7 +169,7 @@ export default function LoginScreen({navigation}) {
                   style={{marginTop:30}} 
                   color="white" 
                   variant='outlined' 
-                  title="CREATE NEW ACCOUNT" 
+                  title={StringsOfLanguages.create_account}
                   onPress={() => navigation.navigate("Register")}
                 />
               </View>

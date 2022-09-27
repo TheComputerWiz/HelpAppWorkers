@@ -22,6 +22,7 @@ import MoreTime from './src/components/MoreTime';
 //add redux
 import { useSelector, useDispatch } from 'react-redux'
 import Slot from './src/components/Slot';
+import StringsOfLanguages from './src/utils/localizations';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,13 +32,13 @@ function HomeStack() {
   const auth = useSelector((state) => state.auth)
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Welcome" component={HomeScreen} options={{ title: 'Welcome, '+auth.data.name }} />
-      <Stack.Screen name="Schedule" component={Schedule} />
-      <Stack.Screen name="Slot" component={Slot} />
-      <Stack.Screen name="Timer" component={Timer} />
-      <Stack.Screen name="Extend Time" component={MoreTime} />
-      <Stack.Screen name="Message" component={Message} />
-      <Stack.Screen name="Job Request" component={JobRequest} />
+      <Stack.Screen name="Welcome" component={HomeScreen} options={{ title: StringsOfLanguages.welcome+', '+auth.data.name }} />
+      <Stack.Screen name="Schedule" component={Schedule} options={{ title: StringsOfLanguages.schedule}} />
+      <Stack.Screen name="Slot" component={Slot} options={{ title: StringsOfLanguages.slot}} />
+      <Stack.Screen name="Timer" component={Timer} options={{ title: StringsOfLanguages.timer}} />
+      <Stack.Screen name="Extend Time" component={MoreTime} options={{ title: StringsOfLanguages.more_time}} />
+      <Stack.Screen name="Message" component={Message} options={{ title: StringsOfLanguages.message}} />
+      <Stack.Screen name="Job Request" component={JobRequest} options={{ title: StringsOfLanguages.job_request}} />
     </Stack.Navigator>
   );
 }
@@ -45,10 +46,10 @@ function HomeStack() {
 function JobStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Dashboard" component={MyJobsScreen} options={{ title: 'Dashboard' }} />
-      <Stack.Screen name="Messages" component={Messages} options={{ title: 'All Messages' }} />
-      <Stack.Screen name="Message" component={Message} />
-      <Stack.Screen name="Job Request" component={JobRequest} />
+      <Stack.Screen name="Dashboard" component={MyJobsScreen} options={{ title: StringsOfLanguages.dashboard }} />
+      <Stack.Screen name="Messages" component={Messages} options={{ title: StringsOfLanguages.all_messages }} />
+      <Stack.Screen name="Message" component={Message} options={{ title: StringsOfLanguages.message}} />
+      <Stack.Screen name="Job Request" component={JobRequest} options={{ title: StringsOfLanguages.job_request}} />
     </Stack.Navigator>
   );
 }
@@ -56,6 +57,13 @@ function JobStack() {
 export default function App() {
 const auth = useSelector((state) => state.auth)
 const displayed = false
+
+useEffect(() => {
+  if(auth.data.language){
+    StringsOfLanguages.setLanguage(auth.data.language)
+  }
+}, [auth, auth.data, auth.data.language])
+
 
   return (
     <NavigationContainer>
@@ -106,16 +114,16 @@ const displayed = false
         >
         {auth.loading ?
         <>
-        <Tab.Screen name="Login" component={LoginScreen} />
-        <Tab.Screen name="Register" component={RegisterScreen} />
+        <Tab.Screen name="Login" options={{title:StringsOfLanguages.login}} component={LoginScreen} />
+        <Tab.Screen name="Register" options={{title:StringsOfLanguages.register}} component={RegisterScreen} />
         </>
         :
         <>
-        <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Earnings" component={EarningsScreen} />
-        <Tab.Screen name="My Jobs" component={JobStack} />
-        <Tab.Screen name="Help" component={HelpScreen} />
-        <Tab.Screen name="My Account" component={MyAccountScreen} />
+        <Tab.Screen name="Home" options={{title:StringsOfLanguages.home}} component={HomeStack} />
+        <Tab.Screen name="Earnings" component={EarningsScreen} options={{ title: StringsOfLanguages.earnings }} />
+        <Tab.Screen name="My Jobs" component={JobStack} options={{ title: StringsOfLanguages.my_jobs }} />
+        <Tab.Screen name="Help" component={HelpScreen} options={{ title: StringsOfLanguages.help }} />
+        <Tab.Screen name="My Account" component={MyAccountScreen} options={{ title: StringsOfLanguages.my_account }} />
         </>
         }
       </Tab.Navigator>

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { update } from '../redux/auth/authSlice';
 import UploadImage from '../components/UploadImage';
 import { patchDataAPI } from '../utils/apiCalls';
+import { removeValue } from '../utils/deviceStorage';
 
 export default function MyAccountScreen() {
   const auth = useSelector((state) => state.auth)
@@ -20,6 +21,11 @@ export default function MyAccountScreen() {
     //dispatch(update({name}))
     const local = await patchDataAPI("worker/user/update_user", {_id:auth.data._id, avatar:auth.data.avatar, example_of_work_images:auth.data.example_of_work_images}, {"x-access-token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjMyYTFhM2Q4MTBkN2Y2YjllZmY5YTYxIiwiZW1haWwiOiJFbWFpbCAiLCJpYXQiOjE2NjM3MDM2MTMsImV4cCI6MTY2MzcxMDgxM30.36vCCJgJv3hFOHp6F1oYi51loXb_4B4hNLn9CaLN4UY"})
     setEdit(false)
+  }
+
+  const LogOut = async() => {
+    dispatch(logout())
+    removeValue('authLogin')
   }
   
   const styles = StyleSheet.create({
@@ -42,7 +48,7 @@ export default function MyAccountScreen() {
             <Button title="Save" color='orange' onPress={handleSave} />
           </View>
           <View style={{alignItems:'flex-end', top:-35}}>
-            <Button title="Log out" color='#e2202c' onPress={() => dispatch(logout())} />
+            <Button title="Log out" color='#e2202c' onPress={LogOut} />
           </View>
         </View>
         <Flex fill style={{alignItems:'center'}}>
@@ -106,7 +112,7 @@ export default function MyAccountScreen() {
             <Button title="Edit" color='green' onPress={() => setEdit(true)} />
           </View>
           <View style={{alignItems:'flex-end', top:-35}}>
-            <Button title="Log out" color='#e2202c' onPress={() => dispatch(logout())} />
+            <Button title="Log out" color='#e2202c' onPress={LogOut} />
           </View>
         </View>
         <Flex fill style={{alignItems:'center'}}>
