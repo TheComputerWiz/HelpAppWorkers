@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Button, VStack, HStack, ListItem, Avatar, Divider } from "@react-native-material/core";
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -22,6 +22,11 @@ export default function HomeScreen({navigation}) {
   })
 
   const auth = useSelector((state) => state.auth)
+  const [reloadOnce, setReloadOnce] = useState(false)
+  useEffect(() => {
+    StringsOfLanguages.setLanguage(auth.data.language)
+    setReloadOnce(true)
+  }, [reloadOnce])
 
     return (
       <ScrollView>

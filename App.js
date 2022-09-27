@@ -30,6 +30,15 @@ const Stack = createNativeStackNavigator();
 
 function HomeStack() {
   const auth = useSelector((state) => state.auth)
+  const [reloadOnce, setReloadOnce] = useState(false)
+  
+  useEffect(() => {
+    if(auth.data.language){
+      StringsOfLanguages.setLanguage(auth.data.language)
+    }
+  
+      setReloadOnce(true)
+  }, [auth])
   return (
     <Stack.Navigator>
       <Stack.Screen name="Welcome" component={HomeScreen} options={{ title: StringsOfLanguages.welcome+', '+auth.data.name }} />
@@ -57,12 +66,20 @@ function JobStack() {
 export default function App() {
 const auth = useSelector((state) => state.auth)
 const displayed = false
+const [reloadOnce, setReloadOnce] = useState(false)
+const [reload2, setReload2] = useState(false)
 
 useEffect(() => {
   if(auth.data.language){
     StringsOfLanguages.setLanguage(auth.data.language)
   }
-}, [auth, auth.data, auth.data.language])
+
+    setReloadOnce(true)
+  
+  if(auth.data.language && reloadOnce){
+    setReload2(true)
+  }
+}, [auth, reloadOnce, reload2])
 
 
   return (
