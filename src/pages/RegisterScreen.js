@@ -5,9 +5,10 @@ import { register } from '../redux/auth/authSlice';
 import { useDispatch } from 'react-redux'
 import CheckBox from '@react-native-community/checkbox';
 import DocumentPicker from 'react-native-document-picker';
-import { postDataAPI } from '../utils/apiCalls';
+import { getDataAPI, postDataAPI } from '../utils/apiCalls';
 import StringsOfLanguages from '../utils/localizations';
 import {Picker} from '@react-native-picker/picker';
+import { sendSmsVerification } from '../utils/verify';
 
 export default function RegisterScreen(){
   
@@ -24,6 +25,10 @@ export default function RegisterScreen(){
   const [pageOne, setPageOne] =useState(true)
   const [pageTwo, setPageTwo] =useState(false)
   const [selectedLanguage, setSelectedLanguage] =useState('')
+  const formattedValue = /^\+[1-9]\d{1,14}$/
+  const [code, setCode] = useState('')
+  const [showVerificationCode, setShowVerificationCode]= useState(false)
+  const [verification, setVerification] = useState(false)
 
   const getUsers = async () => {
     const results = await postDataAPI("worker/user/add_user", {name, phone_number:Number(phoneNumber), email, username:email, password, address, language:selectedLanguage})
@@ -31,6 +36,10 @@ export default function RegisterScreen(){
   }
 
   const handleRegsiter = () => {
+    if(!verification){
+      Alert.alert('Your phone number is not verified')
+      return
+    }
     if(!toggleCheckBox){
       Alert.alert(StringsOfLanguages.agree_to_terms_alert)
       return
@@ -38,12 +47,33 @@ export default function RegisterScreen(){
     getUsers()
   }
 
+  const handlePhoneInput = async() => {
+    if(formattedValue.test(phoneNumber)){
+      await getDataAPI('verify/'+phoneNumber)
+      setShowVerificationCode(true)
+    } else {
+        return Alert.alert('Your phone number is not formatted correctly.')
+    }
+
+  }
+
+  const verifyCode = async() => {
+    const res = await getDataAPI('verify/check/'+phoneNumber+"/"+code)
+    if(res.status === 'approved'){
+      setVerification(true)
+    }
+  }
+
   useEffect(() => {
-    console.log(user._id)
     if(user){
       dispatch(register({name, username:name, phoneNumber, password, address, _id:user._id}))
     }
   }, [user])
+
+  useEffect(() => {
+    console.log(typeof Number(phoneNumber))
+  }, [phoneNumber])
+  
   
 
   const uploadImage = async (filetype) => {
@@ -136,7 +166,7 @@ export default function RegisterScreen(){
         <ScrollView>
           {pageOne &&
           <>
-           <Text style={{fontSize:20, textAlign:'center', marginTop:30}}>CHOOSE A LANGUAGE</Text>
+           <Text style={{fontSize:20, textAlign:'center', marginTop:30}}>{StringsOfLanguages.choose_language}</Text>
             <View style={{borderColor:'black', borderWidth:1, marginTop:20, margin:30}}>
               <Picker
                 selectedValue={selectedLanguage}
@@ -150,7 +180,7 @@ export default function RegisterScreen(){
                 style={{color:'black', backgroundColor:"white"}}
                 dropdownIconColor="black"
               >
-                <Picker.Item label="Choose one..." value="none" />
+                <Picker.Item label={StringsOfLanguages.choose_one} value="none" />
                 <Picker.Item label="English" value="en" />
                 <Picker.Item label="French" value="fr" />
                 <Picker.Item label="Arabic" value="ar" />
@@ -172,7 +202,34 @@ export default function RegisterScreen(){
             <VStack>
               <View style={{margin:50, marginBottom:50, marginTop:10}}>
                 <TextInput color='black' variant="outlined" label={StringsOfLanguages.full_name} onChangeText={(value) => setName(value)} style={{ margin: 6 }} value={name} />
-                <TextInput color='black' variant="outlined" label={StringsOfLanguages.phone_number} onChangeText={(value) => setPhoneNumber(value)} style={{ margin: 6 }} value={phoneNumber} />
+                {!verification && 
+                  <TextInput color='black' variant="outlined" tyle="tel" label={StringsOfLanguages.phone_number} onChangeText={(value) => setPhoneNumber(value)} style={{ margin: 6 }} value={phoneNumber} placeholder="+10000000" />
+                }
+
+                {showVerificationCode && !verification &&
+                  <TextInput color='black' variant="outlined" label={StringsOfLanguages.code} onChangeText={(value) => setCode(value)} style={{ margin: 6 }} value={code} />
+                }
+
+                {!showVerificationCode && !verification &&
+                <Button 
+                  onPress={handlePhoneInput}
+                  title="Verify Phone Number"
+                />
+                }
+
+                {showVerificationCode && !verification &&
+                <Button 
+                  onPress={verifyCode}
+                  title="Submit Verification Code"
+                />
+                }
+
+                {verification && 
+                <Button 
+                  title={verification ? "Successful verification" : "Not able to verify"}
+                />
+                }
+
                 <TextInput color='black' variant="outlined" label={StringsOfLanguages.email} onChangeText={(value) => setEmail(value)} style={{ margin: 6 }} value={email} />
                 <TextInput color='black' variant="outlined" label={StringsOfLanguages.password} onChangeText={(value) => setPassword(value)} style={{ margin: 6 }} value={password} />
                 <TextInput color='black' variant="outlined" label={StringsOfLanguages.address} onChangeText={(value) => setAddress(value)} style={{ margin: 6 }} value={address} />

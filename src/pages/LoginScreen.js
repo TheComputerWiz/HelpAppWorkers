@@ -116,7 +116,7 @@ export default function LoginScreen({navigation}) {
           
           {pageTwo &&
           <>
-            <Text style={{fontSize:20, textAlign:'center', marginTop:30}}>CHOOSE A LANGUAGE</Text>
+            <Text style={{fontSize:20, textAlign:'center', marginTop:30}}>{StringsOfLanguages.choose_language}</Text>
             <View style={{borderColor:'black', borderWidth:1, marginTop:20, margin:30}}>
               <Picker
                 selectedValue={selectedLanguage}
@@ -130,7 +130,7 @@ export default function LoginScreen({navigation}) {
                 style={{color:'black', backgroundColor:"white"}}
                 dropdownIconColor="black"
               >
-                <Picker.Item label="Choose one..." value="none" />
+                <Picker.Item label={StringsOfLanguages.choose_one} value="none" />
                 <Picker.Item label="English" value="en" />
                 <Picker.Item label="French" value="fr" />
                 <Picker.Item label="Arabic" value="ar" />

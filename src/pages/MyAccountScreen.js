@@ -8,6 +8,7 @@ import { update } from '../redux/auth/authSlice';
 import UploadImage from '../components/UploadImage';
 import { patchDataAPI } from '../utils/apiCalls';
 import { removeValue } from '../utils/deviceStorage';
+import StringsOfLanguages from '../utils/localizations';
 
 export default function MyAccountScreen() {
   const auth = useSelector((state) => state.auth)
@@ -45,10 +46,10 @@ export default function MyAccountScreen() {
       <Flex fill >
         <View style={{margin:20, marginBottom:0}}>
           <View style={{alignItems:'flex-start'}}>
-            <Button title="Save" color='orange' onPress={handleSave} />
+            <Button title={StringsOfLanguages.save} color='orange' onPress={handleSave} />
           </View>
           <View style={{alignItems:'flex-end', top:-35}}>
-            <Button title="Log out" color='#e2202c' onPress={LogOut} />
+            <Button title={StringsOfLanguages.log_out} color='#e2202c' onPress={LogOut} />
           </View>
         </View>
         <Flex fill style={{alignItems:'center'}}>
@@ -59,7 +60,7 @@ export default function MyAccountScreen() {
             <UploadImage dispatchCall={update} field='avatar' button_title="Change profile image" />
           </HStack>
           <HStack style={styles.marginTop}>
-            <Button title='Certified' color="black" />
+            <Button title={StringsOfLanguages.certified} color="black" />
           </HStack>
           <VStack style={{width:200}}>
             <TextInput label="name" placeholder={name} value={name} onChangeText={(value) => setName(value)} />
@@ -109,10 +110,10 @@ export default function MyAccountScreen() {
       <Flex fill >
         <View style={{margin:20, marginBottom:0}}>
           <View style={{alignItems:'flex-start'}}>
-            <Button title="Edit" color='green' onPress={() => setEdit(true)} />
+            <Button title={StringsOfLanguages.edit} color='green' onPress={() => setEdit(true)} />
           </View>
           <View style={{alignItems:'flex-end', top:-35}}>
-            <Button title="Log out" color='#e2202c' onPress={LogOut} />
+            <Button title={StringsOfLanguages.log_out} color='#e2202c' onPress={LogOut} />
           </View>
         </View>
         <Flex fill style={{alignItems:'center'}}>
@@ -120,7 +121,7 @@ export default function MyAccountScreen() {
             <Avatar size={130} image={{ uri: auth.data.avatar }} />
           </HStack>
           <HStack style={styles.marginTop}>
-            <Button title='Certified' color="black" />
+            <Button title={StringsOfLanguages.certified} color="black" />
           </HStack>
           <HStack style={styles.marginTop}>
             <Text>{auth.data.name}</Text>

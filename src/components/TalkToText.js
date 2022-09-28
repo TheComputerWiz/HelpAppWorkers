@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { create } from '../redux/message/messageSlice';
 import { useDispatch, useSelector } from 'react-redux'
 import Voice from '@react-native-community/voice';
+import StringsOfLanguages from '../utils/localizations';
 
 
 const TalkToText = ({messageValue}) => {
@@ -85,7 +86,7 @@ const TalkToText = ({messageValue}) => {
         <TextInput
         leadingMode="icon"
         leading={props => <Icon name={!micOn ? "microphone" : "stop"} color={!micOn && 'red'} {...props} onPress={!micOn ? startSpeechRecognizing : stopSpeechRecognizing } />}
-        label="Enter Text"
+        label={StringsOfLanguages.enter_text}
         onChangeText={(value) => setMessageInput(value)}
         value={messageInput[0] }
         trailing={props => <Icon name="send" {...props} onPress={handleMessage} />}
